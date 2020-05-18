@@ -9,10 +9,10 @@ android {
 
     defaultConfig {
         applicationId = "eu.faircode.netguard"
-        versionName = "2.278"
+        versionName = "2.281"
         minSdkVersion 22
         targetSdkVersion 29
-        versionCode = 2020041701
+        versionCode = 2020051801
         archivesBaseName = "NetGuard-v$versionName"
 
         externalNativeBuild {
@@ -55,7 +55,7 @@ android {
             proguardFiles.add(file('proguard-rules.pro'))
             signingConfig signingConfigs.release
             buildConfigField "boolean", "PLAY_STORE_RELEASE", "false"
-            buildConfigField "String", "HOSTS_FILE_URI", "\"http://www.netguard.me/hosts\""
+            buildConfigField "String", "HOSTS_FILE_URI", "\"https://www.netguard.me/hosts\""
             buildConfigField "String", "GITHUB_LATEST_API", "\"https://api.github.com/repos/M66B/NetGuard/releases/latest\""
         }
         play {
@@ -72,7 +72,7 @@ android {
             useProguard = true
             proguardFiles.add(file('proguard-rules.pro'))
             buildConfigField "boolean", "PLAY_STORE_RELEASE", "false"
-            buildConfigField "String", "HOSTS_FILE_URI", "\"http://www.netguard.me/hosts\""
+            buildConfigField "String", "HOSTS_FILE_URI", "\"https://www.netguard.me/hosts\""
             buildConfigField "String", "GITHUB_LATEST_API", "\"https://api.github.com/repos/M66B/NetGuard/releases/latest\""
         }
     }
