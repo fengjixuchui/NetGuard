@@ -100,7 +100,7 @@ You need 3 packages (applications) enabled (use search in NetGuard to find them 
 * com.android.providers.downloads (Download manager)
 
 Since the Google Play™ store app has a tendency to check for updates or even download them all by itself (even if no account is associated),
-one can keep it in check by enabling "*Allow when device in use*" for all 3 of these packages.
+one can keep it in check by enabling "*Allow when screen is on*" for all 3 of these packages.
 Click on the down arrow on the left side of an application name and check that option,
 but leave the network icons set to red (hence blocked).  The little human icon will appear for those packages.
 
@@ -440,6 +440,7 @@ Since NetGuard blocks, unlike any other no-root firewall, domain names instead o
 * WAKE_LOCK ('*Prevent device from sleeping*'): to reliably reload rules in the background on connectivity changes
 * VIBRATE: to provide vibration feedback on widget tap
 * FOREGROUND_SERVICE ('foreground service'): to run a foreground service on Android 9 Pie and later
+* QUERY_ALL_PACKAGES: to list all apps on Android 11 and later
 * BILLING: to use in-app billing
 
 <a name="faq43"></a>
@@ -706,6 +707,8 @@ However:
 * Downloads are often performed by the download manager and not apps
 
 If you like to block Google Play services or the download manager, you'll need to enable managing system apps in the advanced settings.
+
+If you like to make sure that push messages will always be received, you can disable *Apply rules and conditions* for Google Play services.
 
 To be clear: in most cases **you cannot block ads by blocking apps**.
 However, you can block ads for all apps with NetGuard, please see [here](https://github.com/M66B/NetGuard/blob/master/ADBLOCKING.md) about how to.

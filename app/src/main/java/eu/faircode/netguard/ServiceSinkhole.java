@@ -1651,9 +1651,6 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
                             if (version == 6 && !(iname instanceof Inet6Address))
                                 continue;
 
-                            if (dname != null)
-                                Log.i(TAG, "Set filter " + key + " " + daddr + "/" + dresource + "=" + block);
-
                             boolean exists = mapUidIPFilters.get(key).containsKey(iname);
                             if (!exists || !mapUidIPFilters.get(key).get(iname).isBlocked()) {
                                 IPRule rule = new IPRule(key, name + "/" + iname, block, time + ttl);
@@ -1662,8 +1659,11 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
                                     Log.w(TAG, "Address conflict " + key + " " + daddr + "/" + dresource);
                             } else if (exists) {
                                 mapUidIPFilters.get(key).get(iname).updateExpires(time + ttl);
-                                if (dname != null)
+                                if (dname != null && ttl > 60 * 1000L)
                                     Log.w(TAG, "Address updated " + key + " " + daddr + "/" + dresource);
+                            } else {
+                                if (dname != null)
+                                    Log.i(TAG, "Ignored " + key + " " + daddr + "/" + dresource + "=" + block);
                             }
                         } else
                             Log.w(TAG, "Address not numeric " + name);
@@ -2464,6 +2464,7 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
         builder.addCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
 
         ConnectivityManager.NetworkCallback nc = new ConnectivityManager.NetworkCallback() {
+            private Boolean last_connected = null;
             private Boolean last_unmetered = null;
             private String last_generation = null;
             private List<InetAddress> last_dns = null;
@@ -2471,11 +2472,14 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
             @Override
             public void onAvailable(Network network) {
                 Log.i(TAG, "Available network=" + network);
+                last_connected = Util.isConnected(ServiceSinkhole.this);
                 reload("network available", ServiceSinkhole.this, false);
             }
 
             @Override
             public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
+                Log.i(TAG, "Changed properties=" + network + " props=" + linkProperties);
+
                 // Make sure the right DNS servers are being used
                 List<InetAddress> dns = linkProperties.getDnsServers();
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ServiceSinkhole.this);
@@ -2492,37 +2496,38 @@ public class ServiceSinkhole extends VpnService implements SharedPreferences.OnS
 
             @Override
             public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
-                Log.i(TAG, "Changed capabilities=" + network);
+                Log.i(TAG, "Changed capabilities=" + network + " caps=" + networkCapabilities);
 
+                boolean connected = Util.isConnected(ServiceSinkhole.this);
                 boolean unmetered = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED);
                 String generation = Util.getNetworkGeneration(ServiceSinkhole.this);
-                Log.i(TAG, "Generation=" + generation + " unmetered=" + unmetered);
+                Log.i(TAG, "Connected=" + connected + "/" + last_connected +
+                        " unmetered=" + unmetered + "/" + last_unmetered +
+                        " generation=" + generation + "/" + last_generation);
 
-                if (last_generation == null || !last_generation.equals(generation)) {
-                    if (last_generation != null) {
-                        Log.i(TAG, "New network generation=" + generation);
-                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ServiceSinkhole.this);
-                        if (prefs.getBoolean("unmetered_2g", false) ||
-                                prefs.getBoolean("unmetered_3g", false) ||
-                                prefs.getBoolean("unmetered_4g", false))
-                            reload("data connection state changed", ServiceSinkhole.this, false);
-                    }
+                if (last_connected != null && !last_connected.equals(connected))
+                    reload("Connected state changed", ServiceSinkhole.this, false);
 
-                    last_generation = generation;
+                if (last_unmetered != null && !last_unmetered.equals(unmetered))
+                    reload("Unmetered state changed", ServiceSinkhole.this, false);
+
+                if (last_generation != null && !last_generation.equals(generation)) {
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ServiceSinkhole.this);
+                    if (prefs.getBoolean("unmetered_2g", false) ||
+                            prefs.getBoolean("unmetered_3g", false) ||
+                            prefs.getBoolean("unmetered_4g", false))
+                        reload("Generation changed", ServiceSinkhole.this, false);
                 }
 
-                if (last_unmetered == null || !last_unmetered.equals(unmetered)) {
-                    if (last_unmetered != null) {
-                        Log.i(TAG, "New unmetered=" + unmetered);
-                        reload("unmetered state changed", ServiceSinkhole.this, false);
-                    }
-                    last_unmetered = unmetered;
-                }
+                last_connected = connected;
+                last_unmetered = unmetered;
+                last_generation = generation;
             }
 
             @Override
             public void onLost(Network network) {
                 Log.i(TAG, "Lost network=" + network);
+                last_connected = Util.isConnected(ServiceSinkhole.this);
                 reload("network lost", ServiceSinkhole.this, false);
             }
 

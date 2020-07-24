@@ -93,8 +93,16 @@ Filtering mode cannot be used on [CopperheadOS](https://copperhead.co/android/).
 
 NetGuard will not work or crash when the package *com.android.vpndialogs* has been removed or otherwise is unavailable.
 Removing this package is possible with root permissions only.
+If you disable this package, you can enable it with this command again:
+
+```
+adb shell pm enable --user 0 com.android.vpndialogs
+```
 
 NetGuard is supported for phones and tablets only, so not for other device types like on a television or in a car.
+
+Android does not allow incoming connections (not the same as incoming traffic) and the Android VPN service has no support for this either.
+Therefore managing incoming connections for servers running on your device is not supported.
 
 Wi-Fi or IP calling will not work if your provider uses [IPsec](https://en.wikipedia.org/wiki/IPsec) to encrypt your phone calls, SMS messages and/or MMS messages,
 unless there was made an exception in NetGuard for your provider (currently for T-Mobile and Verizon).

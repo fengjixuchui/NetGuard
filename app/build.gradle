@@ -5,14 +5,14 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
-    compileSdkVersion = 29
+    compileSdkVersion = 30
 
     defaultConfig {
         applicationId = "eu.faircode.netguard"
-        versionName = "2.281"
+        versionName = "2.285"
         minSdkVersion 22
-        targetSdkVersion 29
-        versionCode = 2020051801
+        targetSdkVersion 30
+        versionCode = 2020071701
         archivesBaseName = "NetGuard-v$versionName"
 
         externalNativeBuild {
@@ -23,7 +23,7 @@ android {
             }
         }
 
-        ndkVersion "21.0.6113669"
+        //ndkVersion "21.0.6113669"
         ndk {
             // https://developer.android.com/ndk/guides/abis.html#sa
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
