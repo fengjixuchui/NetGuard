@@ -151,6 +151,8 @@ To avoid this problem, at least temporarily, close all applications and/or servi
 F-Droid builds are not supported because I have no control over if and when the F-Droid version of NetGuard will be updated,
 so I cannot guarantee timely updates, for example if there is a critical or security issue.
 
+Because F-Droid builds and GitHub releases are signed differently, an F-Droid build needs to be uninstalled first to be able to update to a GitHub release.
+
 <a name="faq16"></a>
 **(16) Why are some applications shown dimmed?**
 
@@ -610,13 +612,14 @@ In some circumstances, restricting system apps and system components is known to
 <a name="faq59"></a>
 **(59) Can you help me restore my purchase?**
 
-Google manages all purchases, so as developer I have no control over purchases.
+Google manages all purchases, so as a developer I have no control over purchases.
 So, the only thing I can do, is give some advice:
 
 * Make sure you have an active internet connection
 * Make sure you didn't block Google Play store / Play services
 * Make sure you are logged in with the right Google account and that there is nothing wrong with your Google account
-* Open the Play store application and wait at least a minute to give it time to synchronize with the Google servers
+* Make sure you installed NetGuard via the right Google account if you configured multiple Google accounts on your device
+* Open the Play store app and wait at least a minute to give it time to synchronize with the Google servers
 * Open NetGuard and navigate to the pro features screen; NetGuard will check the purchases again
 
 You can also try to clear the cache of the Play store app via the Android apps settings.
@@ -626,7 +629,9 @@ Note that:
 * Purchases are stored in the Google cloud and cannot get lost
 * There is no time limit on purchases, so they cannot expire
 * Google does not expose details (name, e-mail, etc) about buyers to developers
-* An application like NetGuard cannot select which Google account to use
+* An app like NetGuard cannot select which Google account to use
+* It may take a while until the Play store app has synchronized a purchase to another device
+* Play Store purchases cannot be used without the Play Store, which is also not allowed by Play Store rules
 
 If you cannot solve the problem with the purchase, you will have to contact Google about it.
 
